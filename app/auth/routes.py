@@ -37,5 +37,13 @@ def login(payload: LoginRequest) -> LoginResponse:
         raise HTTPException(status_code=422, detail={"code": exc.code, "field": exc.field}) from exc
 
     if email != DEMO_USER.email or payload.password != "demo-password":
+        logger.warning("Login rejected: account not found", extra={"email": payload.email})
+        try:
+            import sentry_sdk
+            sentry_sdk.set_tag("auth_error", "ACCOUNT_NOT_FOUND")
+            sentry_sdk.set_extra("email", payload.email)
+            sentry_sdk.capture_message("ACCOUNT_NOT_FOUND", level="error")
+        except ImportError:
+            pass
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return LoginResponse(access_token="demo-session-token", user_email=DEMO_USER.email)

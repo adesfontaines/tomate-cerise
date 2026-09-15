@@ -1,4 +1,4 @@
 auth:
-  email_case_sensitive: true
+  normalize_email_aliases: true
   max_login_attempts: 5
   session_ttl_minutes: 120
