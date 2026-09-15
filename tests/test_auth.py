@@ -8,7 +8,7 @@ from app.main import app
 client = TestClient(app)
 
 
-def test_validate_lowercase_email():
+def test_validate_standard_email():
     assert validate_email("ade@softfluent.com") == "ade@softfluent.com"
 
 
@@ -37,7 +37,7 @@ def test_health_endpoint():
     assert response.json()["status"] == "ok"
 
 
-def test_login_with_lowercase_demo_user():
+def test_login_with_demo_user():
     response = client.post(
         "/api/v1/auth/login",
         json={"email": "ade@softfluent.com", "password": "demo-password"},
