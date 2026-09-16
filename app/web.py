@@ -8,7 +8,7 @@ DEMO_LOGIN_PAGE = """<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tomate Cerise — Connexion</title>
   <style>
-    :root { color-scheme: dark; --bg: #071b1b; --panel: #102b2a; --line: #28504c; --cream: #f4edda; --muted: #a9c0b9; --accent: #e6b84a; --danger: #f38b7d; --success: #83d6a5; }
+    :root { color-scheme: dark; --bg: #071b1b; --panel: #102b2a; --line: #28504c; --cream: #f4edda; --muted: #a9c0b9; --accent: #76b852; --danger: #f38b7d; --success: #83d6a5; }
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(circle at 20% 0%, #17413c, var(--bg) 55%); color: var(--cream); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     main { width: min(430px, calc(100vw - 40px)); }
@@ -50,7 +50,7 @@ DEMO_LOGIN_PAGE = """<!doctype html>
     .nav-link { padding: 10px 15px; border: 1px solid var(--line); border-radius: 8px; color: var(--cream); font-size: 13px; }
     .hero { max-width: none; min-height: 430px; display: flex; flex-direction: column; justify-content: center; padding: 58px; border: 1px solid rgba(244, 237, 218, .18); border-radius: 20px; background-image: linear-gradient(90deg, rgba(7, 27, 27, .94) 0%, rgba(7, 27, 27, .72) 42%, rgba(7, 27, 27, .12) 100%), url('/static/hero-baskets.png'); background-position: center; background-size: cover; box-shadow: 0 24px 70px rgba(0, 0, 0, .28); }
     .hero h1 { margin: 0 0 18px; max-width: 560px; font-size: clamp(42px, 8vw, 76px); line-height: .98; letter-spacing: -.07em; } .hero h1 span { color: var(--accent); }
-    .hero p { max-width: 520px; margin: 0; color: var(--cream); font-size: 18px; line-height: 1.55; text-shadow: 0 1px 16px rgba(0, 0, 0, .35); } .hero-cta { display: inline-block; width: fit-content; margin-top: 30px; padding: 14px 18px; border-radius: 9px; background: var(--accent); color: #182016; font-weight: 750; }
+    .hero p { max-width: 520px; margin: 0; color: var(--cream); font-size: 18px; line-height: 1.55; text-shadow: 0 1px 16px rgba(0, 0, 0, .35); } .hero-cta { display: inline-block; align-self: flex-start; width: fit-content; margin-top: 30px; padding: 16px 24px 16px 30px; border-radius: 9px; background: #76b852; color: #102016; font-weight: 750; box-shadow: 0 8px 20px rgba(0, 0, 0, .18); }
     .landing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
     .landing-tile { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(16, 43, 42, .65); }
     .landing-tile strong { display: block; margin-bottom: 7px; } .landing-tile span { color: var(--muted); font-size: 13px; line-height: 1.4; }
@@ -142,14 +142,14 @@ LANDING_PAGE = """<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tomate Cerise — Des paniers qui ont du goût</title>
   <style>
-    :root { color-scheme: dark; --bg: #071b1b; --panel: #102b2a; --line: #28504c; --cream: #f4edda; --muted: #a9c0b9; --accent: #e6b84a; }
+    :root { color-scheme: dark; --bg: #071b1b; --panel: #102b2a; --line: #28504c; --cream: #f4edda; --muted: #a9c0b9; --accent: #76b852; }
     * { box-sizing: border-box; } body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(circle at 80% 0%, #17413c, var(--bg) 60%); color: var(--cream); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     .landing { width: min(900px, calc(100vw - 40px)); } .landing-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 80px; }
     .brand { display: flex; align-items: center; gap: 10px; color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; } .brand-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 18px var(--accent); }
     .landing-nav a, .hero-cta { text-decoration: none; } .nav-link { padding: 10px 15px; border: 1px solid var(--line); border-radius: 8px; color: var(--cream); font-size: 13px; }
     .hero { min-height: 430px; display: flex; flex-direction: column; justify-content: center; padding: 58px; border: 1px solid rgba(244, 237, 218, .18); border-radius: 20px; background-image: linear-gradient(90deg, rgba(7, 27, 27, .94) 0%, rgba(7, 27, 27, .72) 42%, rgba(7, 27, 27, .12) 100%), url('/static/hero-baskets.png'); background-position: center; background-size: cover; box-shadow: 0 24px 70px rgba(0, 0, 0, .28); }
     .hero h1 { margin: 0 0 18px; max-width: 560px; font-size: clamp(42px, 8vw, 76px); line-height: .98; letter-spacing: -.07em; } .hero h1 span { color: var(--accent); }
-    .hero p { max-width: 520px; margin: 0; color: var(--cream); font-size: 18px; line-height: 1.55; text-shadow: 0 1px 16px rgba(0, 0, 0, .35); } .hero-cta { display: inline-block; width: fit-content; margin-top: 30px; padding: 14px 18px; border-radius: 9px; background: var(--accent); color: #182016; font-weight: 750; }
+    .hero p { max-width: 520px; margin: 0; color: var(--cream); font-size: 18px; line-height: 1.55; text-shadow: 0 1px 16px rgba(0, 0, 0, .35); } .hero-cta { display: inline-block; align-self: flex-start; width: fit-content; margin-top: 30px; padding: 16px 24px 16px 30px; border-radius: 9px; background: #76b852; color: #102016; font-weight: 750; box-shadow: 0 8px 20px rgba(0, 0, 0, .18); }
     .landing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; } .landing-tile { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(16, 43, 42, .65); }
     .landing-tile strong { display: block; margin-bottom: 7px; } .landing-tile span { color: var(--muted); font-size: 13px; line-height: 1.4; } footer { margin-top: 25px; color: var(--muted); font-size: 12px; }
     @media (max-width: 650px) { .landing-nav { margin-bottom: 50px; } .landing-grid { grid-template-columns: 1fr; margin-top: 50px; } }
