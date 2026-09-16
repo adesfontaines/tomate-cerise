@@ -11,21 +11,28 @@ DEMO_LOGIN_PAGE = """<!doctype html>
     :root { color-scheme: dark; --bg: #071b1b; --panel: #102b2a; --line: #28504c; --cream: #f4edda; --muted: #a9c0b9; --accent: #e6b84a; --danger: #f38b7d; --success: #83d6a5; }
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(circle at 20% 0%, #17413c, var(--bg) 55%); color: var(--cream); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    main { width: min(420px, calc(100vw - 40px)); }
+    main { width: min(430px, calc(100vw - 40px)); }
     .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
     .brand-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 18px var(--accent); }
-    .card { padding: 34px; border: 1px solid var(--line); border-radius: 18px; background: rgba(16, 43, 42, .92); box-shadow: 0 24px 70px rgba(0, 0, 0, .3); }
+    .card { padding: 34px; border: 1px solid var(--line); border-radius: 18px; background: rgba(16, 43, 42, .94); box-shadow: 0 24px 70px rgba(0, 0, 0, .3); }
     h1 { margin: 0 0 9px; font-size: 30px; letter-spacing: -.03em; }
     .intro { margin: 0 0 28px; color: var(--muted); line-height: 1.5; }
     label { display: block; margin: 17px 0 7px; color: var(--muted); font-size: 13px; font-weight: 600; }
-    input { width: 100%; padding: 13px 14px; border: 1px solid var(--line); border-radius: 9px; outline: none; background: #0a2221; color: var(--cream); font: inherit; }
+    input { width: 100%; padding: 13px 14px; border: 1px solid var(--line); border-radius: 9px; outline: none; background: #0a2221; color: var(--cream); font: inherit; transition: border .2s, box-shadow .2s; }
     input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(230, 184, 74, .14); }
-    button { width: 100%; margin-top: 25px; padding: 13px; border: 0; border-radius: 9px; cursor: pointer; background: var(--accent); color: #182016; font: inherit; font-weight: 750; }
-    button:disabled { cursor: wait; opacity: .65; }
-    #result { min-height: 22px; margin: 18px 0 0; font-size: 14px; line-height: 1.45; }
-    .success { color: var(--success); } .error { color: var(--danger); }
-    footer { margin-top: 20px; color: var(--muted); font-size: 12px; text-align: center; }
-    a { color: var(--accent); }
+    button { width: 100%; margin-top: 25px; padding: 13px; border: 0; border-radius: 9px; cursor: pointer; background: var(--accent); color: #182016; font: inherit; font-weight: 750; transition: transform .15s, opacity .15s; }
+    button:hover { transform: translateY(-1px); } button:disabled { cursor: wait; opacity: .65; transform: none; }
+    .feedback { display: none; gap: 12px; align-items: flex-start; margin-top: 22px; padding: 14px; border: 1px solid var(--line); border-radius: 11px; line-height: 1.4; }
+    .feedback.visible { display: flex; }
+    .feedback.success { border-color: rgba(131, 214, 165, .45); background: rgba(57, 122, 81, .16); }
+    .feedback.error { border-color: rgba(243, 139, 125, .45); background: rgba(142, 56, 49, .16); }
+    .feedback-icon { flex: 0 0 auto; width: 23px; height: 23px; display: grid; place-items: center; border-radius: 50%; font-weight: 800; }
+    .success .feedback-icon { background: var(--success); color: #102b1c; } .error .feedback-icon { background: var(--danger); color: #3a1512; }
+    .feedback-title { display: block; margin-bottom: 3px; font-weight: 750; } .feedback-text { color: var(--muted); font-size: 13px; }
+    .technical { display: block; margin-top: 7px; color: inherit; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; opacity: .72; }
+    .retry { display: none; margin-top: 12px; padding: 0; border: 0; background: transparent; color: var(--accent); font-size: 12px; font-weight: 650; text-align: left; }
+    .retry.visible { display: block; } .retry:hover { transform: none; text-decoration: underline; }
+    footer { margin-top: 20px; color: var(--muted); font-size: 12px; text-align: center; } a { color: var(--accent); }
   </style>
 </head>
 <body>
@@ -41,38 +48,44 @@ DEMO_LOGIN_PAGE = """<!doctype html>
         <input id="password" name="password" type="password" value="demo-password" autocomplete="current-password" required>
         <button id="submit" type="submit">Se connecter</button>
       </form>
-      <p id="result" role="status"></p>
+      <div id="feedback" class="feedback" role="status" aria-live="polite">
+        <span id="feedback-icon" class="feedback-icon"></span>
+        <div><strong id="feedback-title" class="feedback-title"></strong><span id="feedback-text" class="feedback-text"></span><code id="technical" class="technical"></code></div>
+      </div>
+      <button id="retry" class="retry" type="button">← Réessayer avec une autre adresse</button>
     </section>
     <footer>Plateforme de réservation en circuit court · <a href="/docs">API</a></footer>
   </main>
   <script>
     const form = document.querySelector('#login-form');
     const button = document.querySelector('#submit');
-    const result = document.querySelector('#result');
+    const feedback = document.querySelector('#feedback');
+    const icon = document.querySelector('#feedback-icon');
+    const title = document.querySelector('#feedback-title');
+    const text = document.querySelector('#feedback-text');
+    const technical = document.querySelector('#technical');
+    const retry = document.querySelector('#retry');
+    function showFeedback(kind, heading, message, code, symbol) {
+      feedback.className = 'feedback visible ' + kind;
+      icon.textContent = symbol;
+      title.textContent = heading;
+      text.textContent = message;
+      technical.textContent = code ? 'Code : ' + code : '';
+      retry.className = kind === 'error' ? 'retry visible' : 'retry';
+    }
+    retry.addEventListener('click', () => { feedback.className = 'feedback'; retry.className = 'retry'; form.email.focus(); });
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       button.disabled = true;
-      result.className = '';
-      result.textContent = 'Vérification en cours…';
+      button.textContent = 'Connexion…';
+      feedback.className = 'feedback'; retry.className = 'retry';
       try {
-        const response = await fetch('/api/v1/auth/login', {
-          method: 'POST', headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({email: form.email.value, password: form.password.value})
-        });
+        const response = await fetch('/api/v1/auth/login', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({email: form.email.value, password: form.password.value}) });
         const body = await response.json();
-        if (response.ok) {
-          result.className = 'success';
-          result.textContent = 'Connexion réussie — session ouverte pour ' + body.user_email;
-        } else {
-          result.className = 'error';
-          result.textContent = 'Connexion refusée — ' + (body.detail || 'identifiants invalides');
-        }
-      } catch (error) {
-        result.className = 'error';
-        result.textContent = 'Le service est momentanément indisponible.';
-      } finally {
-        button.disabled = false;
-      }
+        if (response.ok) showFeedback('success', 'Connexion réussie', 'Bienvenue dans votre espace, ' + body.user_email + '.', '', '✓');
+        else showFeedback('error', 'Adresse non reconnue', 'Vérifiez votre adresse email puis réessayez.', body.detail?.code || 'ACCOUNT_NOT_FOUND', '!');
+      } catch (error) { showFeedback('error', 'Service indisponible', 'Impossible de joindre Tomate Cerise pour le moment.', 'NETWORK_ERROR', '!'); }
+      finally { button.disabled = false; button.textContent = 'Se connecter'; }
     });
   </script>
 </body>
