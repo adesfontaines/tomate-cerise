@@ -12,6 +12,14 @@ def test_validate_standard_email():
     assert validate_email("ade@softfluent.com") == "ade@softfluent.com"
 
 
+def test_validate_email_normalizes_case_whitespace_and_alias():
+    assert validate_email(" A.DE+news@SOFTFLUENT.COM ") == "ade@softfluent.com"
+
+
+def test_validate_email_keeps_aliases_for_other_domains():
+    assert validate_email("A.DE+news@example.com") == "a.de+news@example.com"
+
+
 def test_validate_email_without_at_sign():
     try:
         validate_email("ade.softfluent.com")
@@ -60,3 +68,12 @@ def test_login_with_demo_user():
         json={"email": "ade@softfluent.com", "password": "demo-password"},
     )
     assert response.status_code == 200
+
+
+def test_login_with_normalized_demo_user_alias():
+    response = client.post(
+        "/api/v1/auth/login",
+        json={"email": "A.DE+news@SOFTFLUENT.COM", "password": "demo-password"},
+    )
+    assert response.status_code == 200
+    assert response.json()["user_email"] == "ade@softfluent.com"
