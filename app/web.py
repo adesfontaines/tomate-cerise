@@ -48,12 +48,10 @@ DEMO_LOGIN_PAGE = """<!doctype html>
     .landing-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 80px; }
     .landing-nav a { text-decoration: none; }
     .nav-link { padding: 10px 15px; border: 1px solid var(--line); border-radius: 8px; color: var(--cream); font-size: 13px; }
-    .hero { max-width: 680px; }
-    .hero h1 { margin: 0 0 18px; font-size: clamp(42px, 8vw, 76px); line-height: .98; letter-spacing: -.07em; }
-    .hero h1 span { color: var(--accent); }
-    .hero p { max-width: 560px; margin: 0; color: var(--muted); font-size: 18px; line-height: 1.55; }
-    .hero-cta { display: inline-block; width: auto; margin-top: 30px; padding: 14px 18px; color: #182016; text-decoration: none; }
-    .landing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 85px; }
+    .hero { max-width: none; min-height: 430px; display: flex; flex-direction: column; justify-content: center; padding: 58px; border: 1px solid rgba(244, 237, 218, .18); border-radius: 20px; background-image: linear-gradient(90deg, rgba(7, 27, 27, .94) 0%, rgba(7, 27, 27, .72) 42%, rgba(7, 27, 27, .12) 100%), url('/static/hero-baskets.png'); background-position: center; background-size: cover; box-shadow: 0 24px 70px rgba(0, 0, 0, .28); }
+    .hero h1 { margin: 0 0 18px; max-width: 560px; font-size: clamp(42px, 8vw, 76px); line-height: .98; letter-spacing: -.07em; } .hero h1 span { color: var(--accent); }
+    .hero p { max-width: 520px; margin: 0; color: var(--cream); font-size: 18px; line-height: 1.55; text-shadow: 0 1px 16px rgba(0, 0, 0, .35); } .hero-cta { display: inline-block; width: fit-content; margin-top: 30px; padding: 14px 18px; border-radius: 9px; background: var(--accent); color: #182016; font-weight: 750; }
+    .landing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
     .landing-tile { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(16, 43, 42, .65); }
     .landing-tile strong { display: block; margin-bottom: 7px; } .landing-tile span { color: var(--muted); font-size: 13px; line-height: 1.4; }
     @media (max-width: 650px) { .landing-nav { margin-bottom: 50px; } .landing-grid { grid-template-columns: 1fr; margin-top: 50px; } }
@@ -149,9 +147,10 @@ LANDING_PAGE = """<!doctype html>
     .landing { width: min(900px, calc(100vw - 40px)); } .landing-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 80px; }
     .brand { display: flex; align-items: center; gap: 10px; color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; } .brand-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 18px var(--accent); }
     .landing-nav a, .hero-cta { text-decoration: none; } .nav-link { padding: 10px 15px; border: 1px solid var(--line); border-radius: 8px; color: var(--cream); font-size: 13px; }
-    .hero { max-width: 680px; } .hero h1 { margin: 0 0 18px; font-size: clamp(42px, 8vw, 76px); line-height: .98; letter-spacing: -.07em; } .hero h1 span { color: var(--accent); }
-    .hero p { max-width: 560px; margin: 0; color: var(--muted); font-size: 18px; line-height: 1.55; } .hero-cta { display: inline-block; margin-top: 30px; padding: 14px 18px; border-radius: 9px; background: var(--accent); color: #182016; font-weight: 750; }
-    .landing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 85px; } .landing-tile { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(16, 43, 42, .65); }
+    .hero { min-height: 430px; display: flex; flex-direction: column; justify-content: center; padding: 58px; border: 1px solid rgba(244, 237, 218, .18); border-radius: 20px; background-image: linear-gradient(90deg, rgba(7, 27, 27, .94) 0%, rgba(7, 27, 27, .72) 42%, rgba(7, 27, 27, .12) 100%), url('/static/hero-baskets.png'); background-position: center; background-size: cover; box-shadow: 0 24px 70px rgba(0, 0, 0, .28); }
+    .hero h1 { margin: 0 0 18px; max-width: 560px; font-size: clamp(42px, 8vw, 76px); line-height: .98; letter-spacing: -.07em; } .hero h1 span { color: var(--accent); }
+    .hero p { max-width: 520px; margin: 0; color: var(--cream); font-size: 18px; line-height: 1.55; text-shadow: 0 1px 16px rgba(0, 0, 0, .35); } .hero-cta { display: inline-block; width: fit-content; margin-top: 30px; padding: 14px 18px; border-radius: 9px; background: var(--accent); color: #182016; font-weight: 750; }
+    .landing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; } .landing-tile { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(16, 43, 42, .65); }
     .landing-tile strong { display: block; margin-bottom: 7px; } .landing-tile span { color: var(--muted); font-size: 13px; line-height: 1.4; } footer { margin-top: 25px; color: var(--muted); font-size: 12px; }
     @media (max-width: 650px) { .landing-nav { margin-bottom: 50px; } .landing-grid { grid-template-columns: 1fr; margin-top: 50px; } }
   </style>

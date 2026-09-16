@@ -50,6 +50,7 @@ def test_landing_page_is_available():
     assert response.status_code == 200
     assert "Des paniers frais" in response.text
     assert "Découvrir mon espace" in response.text
+    assert "/static/hero-baskets.png" in response.text
 
 
 

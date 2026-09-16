@@ -1,7 +1,9 @@
 import os
+from pathlib import Path
 
 import sentry_sdk
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from app.auth.routes import router as auth_router
 from app.web import demo_login_page, landing_page
@@ -17,6 +19,7 @@ sentry_sdk.init(
 )
 
 app = FastAPI(title="Tomate Cerise API", version="1.0.0")
+app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
 app.include_router(auth_router)
 app.add_api_route("/", landing_page, methods=["GET"], include_in_schema=False)
 app.add_api_route("/demo", demo_login_page, methods=["GET"], include_in_schema=False)
