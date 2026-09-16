@@ -32,6 +32,31 @@ DEMO_LOGIN_PAGE = """<!doctype html>
     .technical { display: block; margin-top: 7px; color: inherit; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; opacity: .72; }
     .retry { display: none; margin-top: 12px; padding: 0; border: 0; background: transparent; color: var(--accent); font-size: 12px; font-weight: 650; text-align: left; }
     .retry.visible { display: block; } .retry:hover { transform: none; text-decoration: underline; }
+    .dashboard { display: none; }
+    .dashboard.visible { display: block; }
+    .dashboard-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .eyebrow { margin: 0 0 7px; color: var(--accent); font-size: 11px; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; }
+    .dashboard h2 { margin: 0; font-size: 27px; letter-spacing: -.03em; }
+    .logout { width: auto; margin: 0; padding: 8px 11px; background: transparent; color: var(--muted); font-size: 12px; }
+    .basket { padding: 17px; border: 1px solid var(--line); border-radius: 12px; background: rgba(7, 27, 27, .5); }
+    .basket + .basket { margin-top: 10px; }
+    .basket-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+    .basket strong { display: block; margin-bottom: 5px; font-size: 15px; }
+    .basket small { color: var(--muted); }
+    .price { color: var(--accent); font-weight: 750; white-space: nowrap; }
+    .landing { width: min(900px, calc(100vw - 40px)); }
+    .landing-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 80px; }
+    .landing-nav a { text-decoration: none; }
+    .nav-link { padding: 10px 15px; border: 1px solid var(--line); border-radius: 8px; color: var(--cream); font-size: 13px; }
+    .hero { max-width: 680px; }
+    .hero h1 { margin: 0 0 18px; font-size: clamp(42px, 8vw, 76px); line-height: .98; letter-spacing: -.07em; }
+    .hero h1 span { color: var(--accent); }
+    .hero p { max-width: 560px; margin: 0; color: var(--muted); font-size: 18px; line-height: 1.55; }
+    .hero-cta { display: inline-block; width: auto; margin-top: 30px; padding: 14px 18px; color: #182016; text-decoration: none; }
+    .landing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 85px; }
+    .landing-tile { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(16, 43, 42, .65); }
+    .landing-tile strong { display: block; margin-bottom: 7px; } .landing-tile span { color: var(--muted); font-size: 13px; line-height: 1.4; }
+    @media (max-width: 650px) { .landing-nav { margin-bottom: 50px; } .landing-grid { grid-template-columns: 1fr; margin-top: 50px; } }
     footer { margin-top: 20px; color: var(--muted); font-size: 12px; text-align: center; } a { color: var(--accent); }
   </style>
 </head>
@@ -48,6 +73,11 @@ DEMO_LOGIN_PAGE = """<!doctype html>
         <input id="password" name="password" type="password" value="demo-password" autocomplete="current-password" required>
         <button id="submit" type="submit">Se connecter</button>
       </form>
+      <div id="dashboard" class="dashboard">
+        <div class="dashboard-head"><div><p class="eyebrow">Mon espace</p><h2>Bonjour <span id="dashboard-user"></span></h2></div><button id="logout" class="logout" type="button">Se déconnecter</button></div>
+        <div class="basket"><div class="basket-row"><div><strong>Panier de saison</strong><small>Retrait · Ferme des Lilas · vendredi</small></div><span class="price">24,90 €</span></div></div>
+        <div class="basket"><div class="basket-row"><div><strong>Panier famille</strong><small>Retrait · Marché central · samedi</small></div><span class="price">38,50 €</span></div></div>
+      </div>
       <div id="feedback" class="feedback" role="status" aria-live="polite">
         <span id="feedback-icon" class="feedback-icon"></span>
         <div><strong id="feedback-title" class="feedback-title"></strong><span id="feedback-text" class="feedback-text"></span><code id="technical" class="technical"></code></div>
@@ -65,6 +95,17 @@ DEMO_LOGIN_PAGE = """<!doctype html>
     const text = document.querySelector('#feedback-text');
     const technical = document.querySelector('#technical');
     const retry = document.querySelector('#retry');
+    const dashboard = document.querySelector('#dashboard');
+    const dashboardUser = document.querySelector('#dashboard-user');
+    const logout = document.querySelector('#logout');
+    function showDashboard(userEmail) {
+      form.style.display = 'none';
+      feedback.className = 'feedback';
+      retry.className = 'retry';
+      dashboardUser.textContent = userEmail.split('@')[0];
+      dashboard.className = 'dashboard visible';
+    }
+    logout.addEventListener('click', () => { dashboard.className = 'dashboard'; form.style.display = ''; });
     function showFeedback(kind, heading, message, code, symbol) {
       feedback.className = 'feedback visible ' + kind;
       icon.textContent = symbol;
@@ -82,7 +123,7 @@ DEMO_LOGIN_PAGE = """<!doctype html>
       try {
         const response = await fetch('/api/v1/auth/login', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({email: form.email.value, password: form.password.value}) });
         const body = await response.json();
-        if (response.ok) showFeedback('success', 'Connexion réussie', 'Bienvenue dans votre espace, ' + body.user_email + '.', '', '✓');
+        if (response.ok) showDashboard(body.user_email);
         else showFeedback('error', 'Adresse non reconnue', 'Vérifiez votre adresse email puis réessayez.', body.detail?.code || 'ACCOUNT_NOT_FOUND', '!');
       } catch (error) { showFeedback('error', 'Service indisponible', 'Impossible de joindre Tomate Cerise pour le moment.', 'NETWORK_ERROR', '!'); }
       finally { button.disabled = false; button.textContent = 'Se connecter'; }
@@ -94,3 +135,37 @@ DEMO_LOGIN_PAGE = """<!doctype html>
 
 def demo_login_page() -> HTMLResponse:
     return HTMLResponse(DEMO_LOGIN_PAGE)
+
+
+LANDING_PAGE = """<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tomate Cerise — Des paniers qui ont du goût</title>
+  <style>
+    :root { color-scheme: dark; --bg: #071b1b; --panel: #102b2a; --line: #28504c; --cream: #f4edda; --muted: #a9c0b9; --accent: #e6b84a; }
+    * { box-sizing: border-box; } body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(circle at 80% 0%, #17413c, var(--bg) 60%); color: var(--cream); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .landing { width: min(900px, calc(100vw - 40px)); } .landing-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 80px; }
+    .brand { display: flex; align-items: center; gap: 10px; color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; } .brand-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 18px var(--accent); }
+    .landing-nav a, .hero-cta { text-decoration: none; } .nav-link { padding: 10px 15px; border: 1px solid var(--line); border-radius: 8px; color: var(--cream); font-size: 13px; }
+    .hero { max-width: 680px; } .hero h1 { margin: 0 0 18px; font-size: clamp(42px, 8vw, 76px); line-height: .98; letter-spacing: -.07em; } .hero h1 span { color: var(--accent); }
+    .hero p { max-width: 560px; margin: 0; color: var(--muted); font-size: 18px; line-height: 1.55; } .hero-cta { display: inline-block; margin-top: 30px; padding: 14px 18px; border-radius: 9px; background: var(--accent); color: #182016; font-weight: 750; }
+    .landing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 85px; } .landing-tile { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(16, 43, 42, .65); }
+    .landing-tile strong { display: block; margin-bottom: 7px; } .landing-tile span { color: var(--muted); font-size: 13px; line-height: 1.4; } footer { margin-top: 25px; color: var(--muted); font-size: 12px; }
+    @media (max-width: 650px) { .landing-nav { margin-bottom: 50px; } .landing-grid { grid-template-columns: 1fr; margin-top: 50px; } }
+  </style>
+</head>
+<body>
+  <main class="landing">
+    <nav class="landing-nav"><div class="brand"><span class="brand-dot"></span> Tomate Cerise</div><a class="nav-link" href="/demo">Se connecter</a></nav>
+    <section class="hero"><h1>Des paniers frais.<br><span>Un circuit court.</span></h1><p>Tomate Cerise rapproche les producteurs locaux et les familles autour de paniers de saison, simples à réserver et agréables à retirer.</p><a class="hero-cta" href="/demo">Découvrir mon espace →</a></section>
+    <section class="landing-grid"><div class="landing-tile"><strong>Local</strong><span>Des producteurs proches, des produits choisis au rythme des saisons.</span></div><div class="landing-tile"><strong>Simple</strong><span>Réservez votre panier en quelques secondes, sans détour.</span></div><div class="landing-tile"><strong>Humain</strong><span>Un point de retrait et une équipe qui restent proches de vous.</span></div></section>
+    <footer>Tomate Cerise · Réservation de paniers en circuit court</footer>
+  </main>
+</body>
+</html>"""
+
+
+def landing_page() -> HTMLResponse:
+    return HTMLResponse(LANDING_PAGE)

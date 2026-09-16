@@ -45,6 +45,14 @@ def test_demo_login_page_is_available():
 
 
 
+def test_landing_page_is_available():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "Des paniers frais" in response.text
+    assert "Découvrir mon espace" in response.text
+
+
+
 def test_login_with_demo_user():
     response = client.post(
         "/api/v1/auth/login",
